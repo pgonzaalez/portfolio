@@ -1,7 +1,123 @@
+---
+import Icon from './Icon.astro'
+import type { iconPaths } from './IconPaths';
+import '../styles/global.css';
+
+const textLinks: { label: string; href: string }[] = [
+	{ label: 'Home', href: '/' },
+	{ label: 'About', href: '/about/' },
+    { label: 'Projects', href: '/projects/' },
+	{ label: 'Contact', href: '/about/' },
+];
+
+const iconLinks: { label: string; href: string; icon: keyof typeof iconPaths }[] = [
+	{ label: 'Twitter', href: 'https://x.com/cachauES', icon: 'twitter-logo' },
+	{ label: 'GitHub', href: 'https://github.com/pgonzaalez', icon: 'github-logo' },
+    {label: 'LinkedIn', href: 'https://www.linkedin.com/in/iamnoddy/', icon: 'linkedin-logo'},
+];
+
+const isCurrentPage = (href: string) => {
+	let pathname = Astro.url.pathname.replace(import.meta.env.BASE_URL, '');
+	if (pathname.at(0) !== '/') pathname = '/' + pathname;
+	if (pathname.at(-1) !== '/') pathname += '/';
+	return pathname === href || (href !== '/' && pathname.startsWith(href));
+};
+---
+
+
 <nav>
-    <ul>
-        <li><a href="/">Home</a></li>
-        <li><a href="/about">About</a></li>
-        <li><a href="/blog">Blog</a></li>
-    </ul>
+    <div class="nav">
+        <a href="/">
+            <div class="icon">
+                <Icon  icon="terminal-window"  size="1.6em" gradient/>
+            </div>
+        Pol Gonzalez
+        </a>
+        <div class="pages">
+            {
+				textLinks.map(({ label, href }) => (
+					<a aria-current={isCurrentPage(href) ? 'page' : null} class="link" href={href}>
+						{label}
+					</a>
+				))
+			}
+        </div>
+        <div class="socials">
+            {
+                iconLinks.map(({ href, icon, label }) => (
+                    <a href={href} class="social">
+                        <Icon icon={icon} size="1.6em" gradient/>
+                    </a>
+                ))
+            }
+        </div>
+    </div>
 </nav>
+
+
+<style>
+    nav {
+        background: var(--background-regular);
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .nav {
+        display: flex;
+        justify-content: space-between;
+        padding-top: 5rem;
+        padding-left: 5rem;
+        padding-right: 5rem;
+        align-items: center;
+    }
+
+    .pages {
+        display: flex;
+        align-items: center;
+        border: 2px solid ;
+        border-color: var(--gradient-accent);
+        border-radius: 1rem;
+        border-spacing: 2rem;
+        padding: 1rem;
+        
+    }
+
+    a {
+        display: flex;
+        margin: 0 1rem;
+        color: var(--text-regular);
+        text-decoration: none;
+        align-items: center;
+    }
+
+    .icon {
+        margin-right: 0.5rem;
+        padding-right: auto;
+    }
+
+    
+	.socials {
+        display: flex;
+        flex-direction: row; 
+        flex-wrap: nowrap; 
+    }
+
+	.social {
+		display: flex;
+		padding: var(--icon-padding);
+		text-decoration: none;
+		color: var(--accent-dark);
+		transition: color var(--theme-transition);
+	}
+
+	.social:hover,
+	.social:focus {
+		color: var(--accent-text-over);
+	}
+
+    .social:not(:last-child) {
+        margin-right: var(--icon-margin);
+    }
+    .pages a:hover {
+        color: var(--accent-regular);
+    }
+</style>
